@@ -89,7 +89,7 @@ jobs:
         run: |
           APK=app/build/outputs/apk/release/app-release.apk
           test -s "$APK"
-          apksigner verify --verbose --print-certs "$APK" | tee /tmp/apksigner.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/apksigner.txt
           grep -q 'Verified using v1 scheme (JAR signing): true' /tmp/apksigner.txt
           grep -q 'Verified using v2 scheme (APK Signature Scheme v2): true' /tmp/apksigner.txt
           grep -q 'Verified using v3 scheme (APK Signature Scheme v3): true' /tmp/apksigner.txt
