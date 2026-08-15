@@ -84,6 +84,28 @@ jobs:
           GUSTAXY_KEY_PASSWORD: ${{ secrets.GUSTAXY_KEY_PASSWORD }}
         run: ./gradlew :app:assembleRelease --stacktrace
 
+      - name: Apply explicit v1/v2/v3 APK signatures
+        working-directory: build-project
+        env:
+          GUSTAXY_KEYSTORE_PASSWORD: ${{ secrets.GUSTAXY_KEYSTORE_PASSWORD }}
+          GUSTAXY_KEY_ALIAS: ${{ secrets.GUSTAXY_KEY_ALIAS }}
+          GUSTAXY_KEY_PASSWORD: ${{ secrets.GUSTAXY_KEY_PASSWORD }}
+        run: |
+          APK=app/build/outputs/apk/release/app-release.apk
+          APKSIGNER="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          test -s "$APK"
+          "$APKSIGNER" sign \
+            --ks app/gustaxy-release.jks \
+            --ks-key-alias "$GUSTAXY_KEY_ALIAS" \
+            --ks-pass env:GUSTAXY_KEYSTORE_PASSWORD \
+            --key-pass env:GUSTAXY_KEY_PASSWORD \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --out app/build/outputs/apk/release/app-release.resigned.apk \
+            "$APK"
+          mv app/build/outputs/apk/release/app-release.resigned.apk "$APK"
+
       - name: Verify APK signing schemes
         working-directory: build-project
         run: |
