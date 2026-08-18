@@ -17,12 +17,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: pdo, pdo_mysql, pdo_sqlite, mbstring
           coverage: none
+
       - name: Lint PHP files
         run: |
           test -f gustaxy-server.zip
@@ -78,6 +80,7 @@ jobs:
         env:
           GUSTAXY_API_BASE_URL: ${{ secrets.GUSTAXY_API_BASE_URL }}
           GUSTAXY_CERT_SHA256: ${{ secrets.GUSTAXY_CERT_SHA256 }}
+          GUSTAXY_INTEGRITY_SECRET: ${{ secrets.GUSTAXY_INTEGRITY_SECRET }}
           GUSTAXY_KEYSTORE_PATH: gustaxy-release.jks
           GUSTAXY_KEYSTORE_PASSWORD: ${{ secrets.GUSTAXY_KEYSTORE_PASSWORD }}
           GUSTAXY_KEY_ALIAS: ${{ secrets.GUSTAXY_KEY_ALIAS }}
